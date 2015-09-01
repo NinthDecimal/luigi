@@ -222,6 +222,23 @@ class TaskProcess(multiprocessing.Process):
         except ImportError:
             return super(TaskProcess, self).terminate()
 
+    def _recursive_terminate(self):
+        import psutil
+
+        parent = psutil.Process(self.pid)
+        for child in parent.children(recursive=True):
+            child.kill()
+
+        parent.kill()
+
+    def terminate(self):
+        """Terminate this process and it's subprocesses."""
+        # default terminate() doesn't cleanup child processes, it orphans them.
+        try:
+            return self._recursive_terminate()
+        except ImportError:
+            return super(TaskProcess, self).terminate()
+
 
 class SingleProcessPool(object):
     """
