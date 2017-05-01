@@ -378,7 +378,7 @@ class Worker(object):
         self.unfulfilled_counts = collections.defaultdict(int)
 
         try:
-            signal.signal(signal.SIGUSR1, self.handle_interrupt)
+            pass  # ND-HACK causes problems # signal.signal(signal.SIGUSR1, self.handle_interrupt)
         except AttributeError:
             pass
 
